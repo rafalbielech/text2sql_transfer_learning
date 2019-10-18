@@ -1,3 +1,16 @@
+# Omitted from github, please download
+spider_dataset/
+models/sqlnet/glove
+
+# Other annoying things
+.DS_Store
+
+
+
+
+
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
