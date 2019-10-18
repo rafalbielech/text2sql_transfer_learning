@@ -14,18 +14,19 @@ if __name__ == '__main__':
             help='to dataset directory where includes train, test and table json file.')
     parser.add_argument('--train_emb', action='store_true',
             help='Train word embedding.')
+    parser.add_argument('--no_gpu', action='store_true',
+            help='If set, dont use the GPU')
 
     args = parser.parse_args()
 
     N_word=300
     B_word=42
+    GPU = not args.no_gpu
     if args.toy:
         USE_SMALL=True
-        GPU=False
         BATCH_SIZE=20
     else:
         USE_SMALL=False
-        GPU=False
         BATCH_SIZE=64
     TRAIN_ENTRY=(True, True, True)  # (AGG, SEL, COND)
     TRAIN_AGG, TRAIN_SEL, TRAIN_COND = TRAIN_ENTRY
@@ -39,7 +40,7 @@ if __name__ == '__main__':
     word_emb = load_word_emb('glove/glove.%dB.%dd.txt'%(B_word,N_word), \
             load_used=args.train_emb, use_small=USE_SMALL)
 
-    model = SQLNet(word_emb, N_word=N_word, gpu=False, trainable_emb=args.train_emb)
+    model = SQLNet(word_emb, N_word=N_word, gpu=GPU, trainable_emb=args.train_emb)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay = 0)
 
     #initial accuracy

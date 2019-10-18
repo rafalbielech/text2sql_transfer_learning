@@ -17,17 +17,19 @@ if __name__ == '__main__':
             help='output file where predicted SQL queries will be printed on')
     parser.add_argument('--train_emb', action='store_true',
             help='Use trained word embedding for SQLNet.')
+    parser.add_argument('--no_gpu', action='store_true',
+            help='If set, dont use the GPU')
+            
     args = parser.parse_args()
 
     N_word=300
     B_word=42
+    GPU = not args.no_gpu
     if args.toy:
         USE_SMALL=True
-        GPU=True
         BATCH_SIZE=15
     else:
         USE_SMALL=False
-        GPU=True
         BATCH_SIZE=64
     TEST_ENTRY=(True, True, True)  # (AGG, SEL, COND)
 
