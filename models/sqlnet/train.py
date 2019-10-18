@@ -21,11 +21,11 @@ if __name__ == '__main__':
     B_word=42
     if args.toy:
         USE_SMALL=True
-        GPU=True
+        GPU=False
         BATCH_SIZE=20
     else:
         USE_SMALL=False
-        GPU=True
+        GPU=False
         BATCH_SIZE=64
     TRAIN_ENTRY=(True, True, True)  # (AGG, SEL, COND)
     TRAIN_AGG, TRAIN_SEL, TRAIN_COND = TRAIN_ENTRY
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     word_emb = load_word_emb('glove/glove.%dB.%dd.txt'%(B_word,N_word), \
             load_used=args.train_emb, use_small=USE_SMALL)
 
-    model = SQLNet(word_emb, N_word=N_word, gpu=GPU, trainable_emb=args.train_emb)
+    model = SQLNet(word_emb, N_word=N_word, gpu=False, trainable_emb=args.train_emb)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay = 0)
 
     #initial accuracy
