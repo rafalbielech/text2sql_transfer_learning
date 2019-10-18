@@ -19,8 +19,8 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    N_word=300
-    B_word=42
+    N_word=50
+    B_word=6
     GPU = not args.no_gpu
     if args.toy:
         USE_SMALL=True

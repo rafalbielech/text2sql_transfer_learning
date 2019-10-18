@@ -1,7 +1,7 @@
 # Omitted from github, please download
 spider_dataset/
-models/sqlnet/glove/*
-!models/sqlnet/glove/.gitkeep
+#models/sqlnet/glove/*
+#!models/sqlnet/glove/.gitkeep
 
 # Other annoying things
 .DS_Store
