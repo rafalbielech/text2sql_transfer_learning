@@ -16,6 +16,8 @@ if __name__ == '__main__':
             help='Train word embedding.')
     parser.add_argument('--no_gpu', action='store_true',
             help='If set, dont use the GPU')
+    parser.add_argument('--epochs', type=int, default=100,
+            help='the number of epochs to train on')
 
     args = parser.parse_args()
 
@@ -52,7 +54,7 @@ if __name__ == '__main__':
     best_order_acc = init_acc[1][3]
     best_tot_acc = 0.0
 
-    for i in range(300):
+    for i in range(args.epochs):
         print('Epoch %d @ %s'%(i+1, datetime.datetime.now()))
         print(' Loss = %s'%epoch_train(model, optimizer, BATCH_SIZE, sql_data, table_data, schemas, TRAIN_ENTRY))
         train_tot_acc, train_bkd_acc = epoch_acc(model, BATCH_SIZE, sql_data, table_data, schemas, TRAIN_ENTRY, train_flag = True)
