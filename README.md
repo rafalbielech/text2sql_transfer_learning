@@ -25,7 +25,10 @@ Usage: <br>
 from datasplitter import DataSplitter <br><br>
 p = DataSplitter('./spider_dataset') <i>This should be the location of the original spider dataset</i><br><br>
 p.create_dataset_folder("test_dir") <i> Must create new directory before splitting</i><br><br>
-p.merge_data_files("yelp") <br><i>This will merge all json files and then split data so that train.json only contains examples where db_id != yelp and then yelp dataset will be split into the test, dev, and validate files</i><br><br>
+p.merge_data_files() <br><i>This will merge all json files together and save the combined list to self.combined_data</i><br><br>
+p.split_based_on_database(some database to spit on, p.combined_data)<br><br>
 p.delete_dataset_folder() <i>Delete the dataset folder recursively</i><br>
 
 For some reason, DEV_PATH and TEST_PATH right now are expecting a dev.json file thus one is created, however, it is properly split up into test and validate json files using a 0.6 test split. <i>Arbitrarily chosen</i>
+
+Running the datasplitter.py script in command prompt will ask about location of spider dataset, name for new directory, and then present you with a list of available datasets. You can pick which dataset you want to split on by selecting a number. 
