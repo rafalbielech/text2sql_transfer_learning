@@ -21,7 +21,17 @@ TRAIN_PATH = "train.json"
 DEV_PATH = "dev.json"
 TEST_PATH = "dev.json"
 
-Usage: <br>
+There are two available interfaces, a command line interface as well as a python interface.
+
+Example of command line interface:
+
+```
+python datasplitter.py --orig_dataset=spider_dataset --new_dataset_dir=my_new_dataset_for_db_42 --database_num=42 --print_db_nums```
+
+Run ```python datasplitter.py --help``` for help.
+
+
+Example of the python interface: <br>
 from datasplitter import DataSplitter <br><br>
 p = DataSplitter('./spider_dataset') <i>This should be the location of the original spider dataset</i><br><br>
 p.create_dataset_folder("test_dir") <i> Must create new directory before splitting</i><br><br>
@@ -30,5 +40,3 @@ p.split_based_on_database(some database to spit on, p.combined_data)<br><br>
 p.delete_dataset_folder() <i>Delete the dataset folder recursively</i><br>
 
 For some reason, DEV_PATH and TEST_PATH right now are expecting a dev.json file thus one is created, however, it is properly split up into test and validate json files using a 0.6 test split. <i>Arbitrarily chosen</i>
-
-Running the datasplitter.py script in command prompt will ask about location of spider dataset, name for new directory, and then present you with a list of available datasets. You can pick which dataset you want to split on by selecting a number. 

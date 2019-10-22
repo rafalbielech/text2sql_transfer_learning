@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import shutil
+import argparse
 
 class DataSplitter():
     def __init__(self, path_to_original_dataset):
@@ -120,7 +121,7 @@ class DataSplitter():
                 # remove duplicates
                 combined_file = filter_out_duplicates(combined_file)
                 self.combined_data = combined_file
-                self.unique_combined_data = list(set([item['db_id'] for item in self.combined_data]))
+                self.unique_combined_data = sorted(list(set([item['db_id'] for item in self.combined_data])))
             except Exception as e:
                 print("Error merging file and saving to new directory\nError: {}".format(e))
         else:
@@ -129,27 +130,37 @@ class DataSplitter():
     def show_list_of_available_db(self):
         items = [item['db_id'] for item in self.combined_data]
         print("Len of list is {}".format(len(items)))
-        unique_items = list(set(items))
+        unique_items = self.unique_combined_data
         print("There are {} unique dbs".format(len(unique_items)))
         for counter,db in enumerate(unique_items):
             print("{} - {}".format(counter,db))
 
 
 if __name__ == "__main__":
-    original_directory_name = str(input("Where is the original spider dataset located?:\n"))
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--orig_dataset', type=str,
+        help='the location of the original spider dataset')
+    parser.add_argument('--new_dataset_dir', type=str,
+        help='the directory where the new dataset will be placed')
+    parser.add_argument('--database_num', type=int,
+        help='the number of the database to split on')
+    parser.add_argument('--print_db_nums', action='store_true',
+        help='print the database numbers')
+    args = parser.parse_args()
+
+    original_directory_name = args.orig_dataset
     ds = DataSplitter(original_directory_name)
-    new_directory_name = str(input("What is the name of directory you would like to create?:\n"))
+
+    new_directory_name = args.new_dataset_dir
     ds.create_dataset_folder(new_directory_name)
+
     ds.merge_data_files()
-    ds.show_list_of_available_db()
 
-    db_list = int(input("What database # would you like to split on?\n"))
-    db_indicator = None
+    if args.print_db_nums:
+        ds.show_list_of_available_db()
 
-    while (db_list >= len(ds.unique_combined_data)):
-        db_list = int(input("What database # would you like to split on?\n"))
-
-    selected_database = ds.unique_combined_data[db_list]
-    print("You selected to split on {}".format(selected_database))
+    db_chosen_num = args.database_num
+    assert 0 <= db_chosen_num < len(ds.unique_combined_data), 'Database number out of bounds'
+    selected_database = ds.unique_combined_data[db_chosen_num]
 
     ds.split_based_on_database(selected_database, ds.combined_data)
