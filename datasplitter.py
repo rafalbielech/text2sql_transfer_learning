@@ -3,6 +3,7 @@ import sys
 import json
 import shutil
 import argparse
+from collections import Counter
 
 class DataSplitter():
     def __init__(self, path_to_original_dataset):
@@ -73,13 +74,12 @@ class DataSplitter():
             val = list_to_split[int(len(list_to_split) * self.split):]
             return test, val
             # databases contains the list of databases that are in our combined list of unique entries
-
         databases = [item['db_id'] for item in combined_list]
-
         if designated_database in databases:
-            print("{} is in the list".format(designated_database))
+            #print("{} is in the list".format(designated_database))
             all_except_designated = [item for item in combined_list if item['db_id'] != designated_database]
             designated = [item for item in combined_list if item['db_id'] == designated_database]
+            print("| Database {} | train ex #: {} | test ex #: {} |".format(designated_database, len(all_except_designated), len(designated)))
             # write to both dev and train files, because current model config expects these values
             write_to_json("train", all_except_designated)
             write_to_json("dev", designated)
@@ -91,7 +91,28 @@ class DataSplitter():
             print("{} is in not the list".format(designated_database))
             write_to_json("all_train", combined_list)
 
+    def get_dataset_statistics(self):
+        # used to find the number of different word tokens 
+        def get_word_types(list_of_sentences):
+            cnt = Counter()
+            for sentence in list_of_sentences:
+                for token in sentence:
+                    cnt[token] += 1
+            return len(cnt), cnt.most_common(10)
+        
+        def get_average_length(list_of_sentences):
+            length_list = []
+            for sentence in list_of_sentences: 
+                length_list.append(len(sentence))
+            return sum(length_list)/(len(length_list))
 
+        sentence_list = [item['question_toks'] for item in self.combined_data]
+        query_list = [item['query_toks'] for item in self.combined_data]
+        print("Number of word types {} and most common tokens: {}".format(get_word_types(sentence_list)[0],get_word_types(sentence_list)[1]))
+        print("Average query length {}".format(get_average_length(query_list)))
+        print("Average sentence length {}".format(get_average_length(sentence_list)))
+                
+                
 
     def merge_data_files(self, file_names=["train", "train_others", "dev"]):
         '''
