@@ -1,0 +1,11 @@
+datasplitter: &datasplitter
+  orig_dataset: spider_dataset
+  new_dataset_dir: my_new_dataset_for_db_42
+  database_num: 42
+retrain: &retrain
+train: &train 
+test: &test
+
+
+
+
