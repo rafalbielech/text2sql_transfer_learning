@@ -6,12 +6,12 @@ import argparse
 from collections import Counter
 
 class DataSplitter():
-    def __init__(self, path_to_original_dataset):
+    def __init__(self, path_to_original_dataset, split=0.6):
         self.new_dataset = "" # path to the new dataset that we will be creating
+        self.path = path_to_original_dataset # path to the original spider_dataset
         self.combined_data = [] # contains all of the merged data from multiple data files
         self.unique_combined_data = [] # contains only unique database names from the combined data list
-        self.path = path_to_original_dataset # path to the original spider_dataset
-        self.split = 0.6
+        self.split = split
         if (not os.path.exists(self.path)): # check if the path exists, if it does not, raise error
             raise ValueError("There is an issue with the path you specified, try again")
 
@@ -68,10 +68,15 @@ class DataSplitter():
                 print("Error writing {}\nError: {}".format(temp_file_path, e))
                 sys.exit()
 
-        def split_test_val(list_to_split):
+        def split_test_val(list_to_split, split_param):
             # split list of items into testing and validation sets based on self.split
-            test = list_to_split[:int(len(list_to_split) * self.split)]
-            val = list_to_split[int(len(list_to_split) * self.split):]
+            if split_param < 1.0:
+                # then, we are splitting by percentage
+                val = list_to_split[:int(len(list_to_split) * split_param)]
+                test = list_to_split[int(len(list_to_split) * split_param):]
+            else:
+                val = list_to_split[:int(split_param)]
+                test = list_to_split[int(split_param):]
             return test, val
             # databases contains the list of databases that are in our combined list of unique entries
         databases = [item['db_id'] for item in combined_list]
@@ -84,7 +89,7 @@ class DataSplitter():
             write_to_json("train", all_except_designated)
             write_to_json("dev", designated)
             # further split the dev into testing and validation file
-            test, val = split_test_val(designated)
+            test, val = split_test_val(designated, self.split)
             write_to_json("test", test)
             write_to_json("validate", val)
         else:
@@ -156,7 +161,6 @@ class DataSplitter():
                 move_file_to_new_dir("tables")
                 # remove duplicates from combined list
                 combined_file = filter_out_duplicates(combined_file)
-
                 self.combined_data = combined_file
                 self.unique_combined_data = sorted(list(set([item['db_id'] for item in self.combined_data])))
             except Exception as e:
@@ -184,10 +188,12 @@ if __name__ == "__main__":
         help='the number of the database to split on')
     parser.add_argument('--print_db_nums', action='store_true',
         help='print the database numbers')
+    parser.add_argument('--split', type=float, 
+        help='retrain/test split, either < 1 as decimal for percentage or integer for number of examples in retrain file', default=0.6)
     args = parser.parse_args()
 
     original_directory_name = args.orig_dataset
-    ds = DataSplitter(original_directory_name)
+    ds = DataSplitter(original_directory_name, args.split)
 
     new_directory_name = args.new_dataset_dir
     ds.create_dataset_folder(new_directory_name)
