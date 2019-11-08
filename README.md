@@ -11,7 +11,6 @@ python train.py --dataset=../../spider_dataset/ --no_gpu --epochs=100
 
 Of course, you can use different flags; run ```python train.py --help``` for help w/the flags.
 
-
 ## Data Split
 All of our data is found in the {train, train_other, dev}.json files in the original spider dataset. The data split module creates a new folder in this project that contains the files that the modules is expecting in the train and test.
 
