@@ -1,0 +1,28 @@
+body {
+    font-family: Georgia;
+}
+
+button{
+    border-radius: 25px;
+}
+
+.padding {
+    padding-top: 5%;
+}
+
+.active-amber-textarea-2 textarea.md-textarea {
+    border-bottom: 1px solid #ffa000;
+    box-shadow: 0 1px 0 0 #ffa000;
+}
+
+.active-amber-textarea-2.md-form label.active {
+    color: #ffa000;
+}
+
+.active-amber-textarea-2.md-form label {
+    color: #ffa000;
+}
+
+.active-amber-textarea-2.md-form textarea.md-textarea:focus:not([readonly])+label {
+    color: #ffa000;
+}

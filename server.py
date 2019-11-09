@@ -17,7 +17,10 @@ def welcome():
 
 @app.route("/evaluate", methods=['POST'])
 def forward_feed():
-    return jsonify(result={})
+    # capture the input from the front end
+    response = request.get_json(force=True)
+    # right now, only return the input uppercased
+    return jsonify(result=response['data'].upper())
 
 @app.route("/status", methods=['GET'])
 def get_status():
@@ -31,6 +34,6 @@ if __name__ == "__main__":
         assert 80 <= args.port_number < 65000, 'port number out of bounds'
         print("Connect to http://{}:{} to access this server".format(get_ip_address(), args.port_number))
 
-        app.run(host="0.0.0.0", port=args.port_number, debug=False)
+        app.run(host="0.0.0.0", port=args.port_number, debug=True)
     except Exception as e:
         print("ERROR in the start-up process:{}", e)
