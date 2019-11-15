@@ -3,15 +3,17 @@ import sys
 import json
 import shutil
 import argparse
+import random as r
 from collections import Counter
 
 class DataSplitter():
-    def __init__(self, path_to_original_dataset, split=0.6):
+    def __init__(self, path_to_original_dataset, train_split=0.6, retrain_split=0.6):
         self.new_dataset = "" # path to the new dataset that we will be creating
         self.path = path_to_original_dataset # path to the original spider_dataset
         self.combined_data = [] # contains all of the merged data from multiple data files
         self.unique_combined_data = [] # contains only unique database names from the combined data list
-        self.split = split
+        self.train_split = train_split # split used to separate training data into train and val
+        self.retrain_split = retrain_split # split used to separate retrain data into train and other, other is then split equally to test and val
         if (not os.path.exists(self.path)): # check if the path exists, if it does not, raise error
             raise ValueError("There is an issue with the path you specified, try again")
 
@@ -53,7 +55,72 @@ class DataSplitter():
             print("Nothing to delete, the path does not exist or self.new_dataset is empty")
             sys.exit()
 
-    def split_based_on_database(self, designated_database, combined_list):
+    def split_based_on_database_v2(self, designated_database, combined_list):
+        '''
+        This function splits the combined list of examples into training/test/validation files
+        The split is done based on the designated_database variable, examples where the db_id matches designated_database
+        are split into test/validation files, all other examples are sent to training
+        '''
+        def write_to_json(file_name, list):
+            # write a list object to file
+            temp_file_path = os.path.join(self.new_dataset, file_name + ".json")
+            try:
+                json.dump(list, open(temp_file_path , "w"))
+            except Exception as e:
+                print("Error writing {}\nError: {}".format(temp_file_path, e))
+                sys.exit()
+
+        def split_training_data(list_to_split, split_param):
+            # split list of items into train and validation sets based on self.train_split
+            # first, shuffle the list to make random splits
+            r.shuffle(list_to_split)
+            # shuffle the list before splitting
+            if split_param < 1.0:
+                # then, we are splitting by percentage
+                train_train = list_to_split[:int(len(list_to_split) * split_param)]
+                train_val = list_to_split[int(len(list_to_split) * split_param):]
+            else:
+                train_train = list_to_split[:int(split_param)]
+                train_val = list_to_split[int(split_param):]
+            return train_train, train_val
+
+        def split_retrain_set(list_to_split, split_param):
+            def split_equally(list, n_groups):
+                k, m = divmod(len(list), n_groups)
+                return [list[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(n_groups)]
+            # this method splits the retrain data into three categories, train, val, and test
+            r.shuffle(list_to_split)
+            if split_param < 1.0:
+                retrain_train = list_to_split[:int(len(list_to_split) * split_param)]
+                val_and_test_equal_split = split_equally(list_to_split[int(len(list_to_split) * split_param):], 2)
+            else:
+                retrain_train = list_to_split[:int(split_param)]
+                val_and_test_equal_split = split_equally(list_to_split[int(split_param):], 2)
+            # return 
+            return retrain_train, val_and_test_equal_split[0], val_and_test_equal_split[1]
+            
+
+        # databases contains the list of databases that are in our combined list of unique entries
+        databases = [item['db_id'] for item in combined_list]
+        if designated_database in databases:
+            #print("{} is in the list".format(designated_database))
+            all_except_designated = [item for item in combined_list if item['db_id'] != designated_database]
+            designated = [item for item in combined_list if item['db_id'] == designated_database]
+            print("| Database {} | train ex #: {} | test ex #: {} |".format(designated_database, len(all_except_designated), len(designated)))
+            
+            train_train, train_val = split_training_data(all_except_designated, self.train_split)
+            write_to_json("train_train", train_train)
+            write_to_json("train_val", train_val)
+
+            retrain_train, retrain_val, retrain_test = split_retrain_set(designated, self.retrain_split)
+            write_to_json("retrain_train", retrain_train)
+            write_to_json("retrain_val", retrain_val)
+            write_to_json("retrain_test", retrain_test)
+        else:
+            print("{} is in not the list".format(designated_database))
+            write_to_json("all_train", combined_list)
+
+    def split_based_on_database_v1(self, designated_database, combined_list):
         '''
         This function splits the combined list of examples into training/test/validation files
         The split is done based on the designated_database variable, examples where the db_id matches designated_database
@@ -89,13 +156,14 @@ class DataSplitter():
             write_to_json("train", all_except_designated)
             write_to_json("dev", designated)
             # further split the dev into testing and validation file
-            test, val = split_test_val(designated, self.split)
+            test, val = split_test_val(designated, self.train_split)
             write_to_json("test", test)
             write_to_json("validate", val)
         else:
             print("{} is in not the list".format(designated_database))
             write_to_json("all_train", combined_list)
-
+    
+    
     def get_dataset_statistics(self):
         # used to find the number of different word tokens 
         def get_word_types(list_of_sentences):
@@ -116,7 +184,6 @@ class DataSplitter():
         print("Number of word types {} and most common tokens: {}".format(get_word_types(sentence_list)[0],get_word_types(sentence_list)[1]))
         print("Average query length {}".format(get_average_length(query_list)))
         print("Average sentence length {}".format(get_average_length(sentence_list)))
-                
                 
 
     def merge_data_files(self, file_names=["train", "train_others", "dev"]):
@@ -169,6 +236,7 @@ class DataSplitter():
         else:
             print("Create a new dataset folder first")
 
+
     def show_list_of_available_db(self):
         items = [item['db_id'] for item in self.combined_data]
         print("Len of list is {}".format(len(items)))
@@ -188,12 +256,16 @@ if __name__ == "__main__":
         help='the number of the database to split on')
     parser.add_argument('--print_db_nums', action='store_true',
         help='print the database numbers')
-    parser.add_argument('--split', type=float, 
-        help='retrain/test split, either < 1 as decimal for percentage or integer for number of examples in retrain file', default=0.6)
+    parser.add_argument('--train_split', type=float, 
+        help='training data split, either < 1 as decimal for percentage or integer for number of examples in retrain file', default=0.6)
+    parser.add_argument('--retrain_split', type=float, 
+        help='retrain data split, either < 1 as decimal for percentage or integer for number of examples in retrain file', default=0.6)
+    parser.add_argument('--version', type=int, 
+        help='version 1 produces train val test splits, version 2 furthers splits each into sub train retrain splits', default=2)
     args = parser.parse_args()
 
     original_directory_name = args.orig_dataset
-    ds = DataSplitter(original_directory_name, args.split)
+    ds = DataSplitter(original_directory_name, args.train_split, args.retrain_split)
 
     new_directory_name = args.new_dataset_dir
     ds.create_dataset_folder(new_directory_name)
@@ -207,4 +279,9 @@ if __name__ == "__main__":
     assert 0 <= db_chosen_num < len(ds.unique_combined_data), 'Database number out of bounds'
     selected_database = ds.unique_combined_data[db_chosen_num]
 
-    ds.split_based_on_database(selected_database, ds.combined_data)
+    if args.version == 1:
+        print('splitting using version 1')
+        ds.split_based_on_database_v1(selected_database, ds.combined_data)
+    else:
+        print('splitting using version 2')
+        ds.split_based_on_database_v2(selected_database, ds.combined_data)

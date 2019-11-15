@@ -24,7 +24,7 @@ There are two available interfaces, a command line interface as well as a python
 
 Example of command line interface:
 
-```python datasplitter.py --orig_dataset=spider_dataset --new_dataset_dir=my_new_dataset_for_db_42 --database_num=42 --print_db_nums --split=0.7```
+```python datasplitter.py --orig_dataset=spider_dataset --new_dataset_dir=my_new_dataset_for_db_42 --database_num=42 --print_db_nums --train_split=0.7```
 
 Run below for help
 ```python datasplitter.py --help```
@@ -33,10 +33,13 @@ Run below for help
 Example of the python interface:
 ```python
 from datasplitter import DataSplitter
-p = DataSplitter(path_to_original_dataset='./spider_dataset', split=0.6)
+p = DataSplitter(path_to_original_dataset='./spider_dataset', train_split=0.6)
 p.create_dataset_folder("test_dir")
 p.merge_data_files()
-p.split_based_on_database(some_database_to_split_on, p.combined_data)
+p.split_based_on_database_v1(some_database_to_split_on, p.combined_data)
+# ex: p.split_based_on_database_v1("yelp", p.combined_data)
+# if you would like to create further splits in train and retrain then use v2
+# ex:  p.split_based_on_database_v2("yelp", p.combined_data)
 p.delete_dataset_folder()
 ```
 For some reason, DEV_PATH and TEST_PATH right now are expecting a dev.json file thus one is created, however, it is properly split up into test and validate json files using a designated split.
