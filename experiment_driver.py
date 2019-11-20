@@ -14,6 +14,7 @@ def process_arguments(arguments, i):
                     kwargs.append("--"+key) 
             else:
                 kwargs.append("--"+key+"="+str(arguments[key]))
+
     return kwargs
 
 
@@ -32,15 +33,17 @@ if __name__ == '__main__':
 
     for i in range(args.start, args.end+1):
         print('Starting datasplitting for', i)
+        f = open("output_"+str(i)+".txt", "w")
         #datasplitter
         kwargs=process_arguments(config["datasplitter"]["arguments"], i)
         print(kwargs)
-        subprocess.call(config["datasplitter"]["execCommand"]+kwargs)
+        subprocess.call(config["datasplitter"]["execCommand"]+kwargs, stdout=f)
     
         print('Calling train for', i) 
         kwargs_train = process_arguments(config["train"]["arguments"], i)
-        subprocess.call(config["train"]["execCommand"]+kwargs_train)
+        subprocess.call(config["train"]["execCommand"]+kwargs_train, stdout=f)
         
         print('Calling retrain for', i)
         kwargs_retrain = process_arguments(config["retrain"]["arguments"], i)
-        subprocess.call(config["retrain"]["execCommand"]+kwargs_retrain)
+        subprocess.call(config["retrain"]["execCommand"]+kwargs_retrain, stdout=f)
+        f.close()
