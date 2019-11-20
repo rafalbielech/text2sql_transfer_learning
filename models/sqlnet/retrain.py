@@ -34,9 +34,10 @@ if __name__ == '__main__':
     # Might only need to focus on the FC layer. 
     # Sizes of the smallest and largest dataset in SPIDER: 4, 569
 
-
+  
     args = parser.parse_args()
-
+    args.base_model_path+="/"
+    args.save_to_path+="/"
     N_word=50
     B_word=6
     GPU = not args.no_gpu
@@ -65,13 +66,13 @@ if __name__ == '__main__':
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay = 0)
     
     print("Loading from sel model...")
-    model.sel_pred.load_state_dict(torch.load(os.path.join(args.base_model_path, "/sel_models.dump")))
+    model.sel_pred.load_state_dict(torch.load(os.path.join(args.base_model_path, "sel_models.dump")))
     print("Loading from sel model...")
-    model.cond_pred.load_state_dict(torch.load(os.path.join(args.base_model_path, "/cond_models.dump")))
+    model.cond_pred.load_state_dict(torch.load(os.path.join(args.base_model_path, "cond_models.dump")))
     print("Loading from sel model...")
-    model.group_pred.load_state_dict(torch.load(os.path.join(args.base_model_path, "/group_models.dump")))
+    model.group_pred.load_state_dict(torch.load(os.path.join(args.base_model_path, "group_models.dump")))
     print("Loading from sel model...")
-    model.order_pred.load_state_dict(torch.load(os.path.join(args.base_model_path, "/order_models.dump")))
+    model.order_pred.load_state_dict(torch.load(os.path.join(args.base_model_path, "order_models.dump")))
     #initial accuracy
     init_acc = epoch_acc(model, BATCH_SIZE, val_sql_data, val_table_data, schemas, TRAIN_ENTRY)
     print('Initial acc', init_acc)
@@ -101,19 +102,19 @@ if __name__ == '__main__':
         if val_bkd_acc[0] > best_sel_acc:
             best_sel_acc = train_bkd_acc[0]
             print("Saving sel model...")
-            torch.save(model.sel_pred.state_dict(), os.path.join(args.save_to_path, "/sel_models.dump"))
+            torch.save(model.sel_pred.state_dict(), os.path.join(args.save_to_path, "sel_models.dump"))
         if val_bkd_acc[1] > best_cond_acc:
             best_cond_acc = train_bkd_acc[1]
             print("Saving cond model...")
-            torch.save(model.cond_pred.state_dict(), os.path.join(args.save_to_path, "/cond_models.dump"))
+            torch.save(model.cond_pred.state_dict(), os.path.join(args.save_to_path, "cond_models.dump"))
         if val_bkd_acc[2] > best_group_acc:
             best_group_acc = train_bkd_acc[2]
             print("Saving group model...")
-            torch.save(model.group_pred.state_dict(), os.path.join(args.save_to_path, "/group_models.dump"))
+            torch.save(model.group_pred.state_dict(), os.path.join(args.save_to_path, "group_models.dump"))
         if train_bkd_acc[3] > best_order_acc:
             best_order_acc = train_bkd_acc[3]
             print("Saving order model...")
-            torch.save(model.order_pred.state_dict(), os.path.join(args.save_to_path, "/order_models.dump"))
+            torch.save(model.order_pred.state_dict(), os.path.join(args.save_to_path, "order_models.dump"))
         if val_tot_acc > best_tot_acc:
             best_tot_acc = val_tot_acc
 

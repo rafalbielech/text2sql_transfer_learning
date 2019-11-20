@@ -43,4 +43,3 @@ if __name__ == '__main__':
         print('Calling retrain for', i)
         kwargs_retrain = process_arguments(config["retrain"]["arguments"], i)
         subprocess.call(config["retrain"]["execCommand"]+kwargs_retrain)
-        break
