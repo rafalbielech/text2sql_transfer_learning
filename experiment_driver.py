@@ -34,6 +34,7 @@ if __name__ == '__main__':
         print('Starting datasplitting for', i)
         #datasplitter
         kwargs=process_arguments(config["datasplitter"]["arguments"], i)
+        print(kwargs)
         subprocess.call(config["datasplitter"]["execCommand"]+kwargs)
     
         print('Calling train for', i) 

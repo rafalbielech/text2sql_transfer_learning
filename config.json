@@ -10,7 +10,8 @@
                "new_dataset_dir": "new_db_split_",
                "database_num": 1,
                "train_split": 0.7,
-               "print_db_nums": false
+               "print_db_nums": false,
+               "retrain_split": 0.7
         }
     },
     "train":{

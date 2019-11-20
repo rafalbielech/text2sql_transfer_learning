@@ -1,0 +1,48 @@
+<html>
+
+<head>
+    <title>Text2SQL Transfer Learning demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./static/CSS/bootstrap.min.css">
+    <link rel="stylesheet" href="./static/CSS/general.css">
+</head>
+
+<body>
+    <div class="container align-items-center">
+        <div class="row padding text-center">
+            <div class="col">
+                <h1>Text2SQL Transfer Learning Demo</h1>
+            </div>
+        </div>
+        <div class="row padding">
+            <div class="col">
+                <!--Basic textarea-->
+                <div class="md-form amber-textarea active-amber-textarea-2">
+                    <textarea id="input_form" class="md-textarea form-control" rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row padding text-center">
+            <div class="col">
+                <!--Basic textarea-->
+                <button type="button" id="convert_button" class="btn btn-success">Convert to SQL</button>
+            </div>
+            <div class="col">
+                <!--Basic textarea-->
+                <button type="button" id="clear_button" class="btn btn-danger">Clear</button>
+            </div>
+        </div>
+        <hr>
+        <div class="row padding">
+            <div class="col">
+                <div id="response"></div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="./static/JS/jquery.min.js"></script>
+<script src="./static/JS/bootstrap.min.js"></script>
+<script src="./static/JS/general.js"></script>
+
+</html>
