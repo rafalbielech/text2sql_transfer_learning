@@ -1,7 +1,9 @@
 function clear_out_contents(){
     document.getElementById("input_form").value = "";
     document.getElementById("response").innerHTML = "";
+    document.getElementById("response_card").style.display = "none";
 }
+
 
 document.getElementById("clear_button").onclick = function () {
     clear_out_contents();
@@ -18,6 +20,7 @@ document.getElementById("convert_button").onclick = function () {
             contentType: "application/json",
             timeout : 5000,
             success: function(result) {
+              document.getElementById("response_card").style.display = "block";
               document.getElementById("response").innerHTML = result.result;
             },
             error: function(result) {

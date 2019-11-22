@@ -10,33 +10,45 @@
 
 <body>
     <div class="container align-items-center">
-        <div class="row padding text-center">
-            <div class="col">
-                <h1>Text2SQL Transfer Learning Demo</h1>
-            </div>
-        </div>
-        <div class="row padding">
-            <div class="col">
-                <!--Basic textarea-->
-                <div class="md-form amber-textarea active-amber-textarea-2">
-                    <textarea id="input_form" class="md-textarea form-control" rows="3"></textarea>
+        <div class="card border-left-success shadow h-60" style="border-radius: 25px; margin-top: 2%">
+            <div class="card-body">
+                <div class="row padding text-center">
+                    <div class="col font-italic font-bold">
+                        <h1>Text-to-SQL Transfer Learning </h1>
+                    </div>
+                </div>
+                <div class="row padding">
+                    <div class="col">
+                        <!--Basic textarea-->
+                        <div class="md-form amber-textarea active-amber-textarea-2">
+                            <textarea id="input_form" class="md-textarea form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row padding text-center">
+                    <div class="col">
+                        <!--Basic textarea-->
+                        <button type="button" id="convert_button" class="btn btn-success">Convert to SQL</button>
+                    </div>
+                    <div class="col">
+                        <!--Basic textarea-->
+                        <button type="button" id="clear_button" class="btn btn-danger">Clear</button>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="row padding text-center">
-            <div class="col">
-                <!--Basic textarea-->
-                <button type="button" id="convert_button" class="btn btn-success">Convert to SQL</button>
-            </div>
-            <div class="col">
-                <!--Basic textarea-->
-                <button type="button" id="clear_button" class="btn btn-danger">Clear</button>
-            </div>
-        </div>
         <hr>
-        <div class="row padding">
-            <div class="col">
-                <div id="response"></div>
+        <div class="card border-left-success shadow h-60 text-center" id="response_card"
+            style="border-radius: 25px; margin-top: 2%; display: none">
+            <div class="card-body">
+                <div>
+                    <h4>Result:</h4>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div id="response"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

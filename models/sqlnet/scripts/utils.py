@@ -173,6 +173,7 @@ def print_results(model, batch_size, sql_data, table_data, output_file, schemas,
     one_acc_num = 0.0
     tot_acc_num = 0.0
     output =  open(output_file, 'w')
+    # dev_output = open('dissected.text', 'w')
     while st < len(sql_data):
         ed = st+batch_size if st+batch_size < len(perm) else len(perm)
         q_seq, col_seq, col_num, ans_seq, query_seq, gt_cond_seq,\
@@ -180,11 +181,48 @@ def print_results(model, batch_size, sql_data, table_data, output_file, schemas,
         raw_q_seq = [x[0] for x in raw_data]
         raw_col_seq = [x[1] for x in raw_data]
         query_gt, table_ids = to_batch_query(sql_data, perm, st, ed)
+        #print("q_seq - {} \n\n col_seq - {} \n\n col_num - {} \n\n pred_entry - {} \n\n".format(q_seq, col_seq, col_num, pred_entry))
         score = model.forward(q_seq, col_seq, col_num, pred_entry)
+        #print("score - {} \n\n col_org_seq - {} \n\n schema_seq - {} \n\n".format(score, col_org_seq, schema_seq))
         gen_sqls = model.gen_sql(score, col_org_seq, schema_seq)
         for sql in gen_sqls:
             output.write(sql+"\n")
         st = ed
+
+def get_table_col_names(table_loc, table_name):
+    json_file = open(table_loc)
+    data = json.load(json_file)
+    print("Loaded json file")
+    col_seq = []
+    col_org_seq = []
+    schema_seq = []
+    for item in data:
+        if (item['db_id'] == table_name):
+            temp1 = item['column_names']
+            for temp1_i in temp1:
+                col_seq.append([temp2_i for temp2_i in temp1_i[1].split(" ")])
+            col_org_seq.append([item for item in item['column_names_original']])
+            schema_seq.append(item)
+            
+    return [col_seq], col_org_seq, schema_seq
+
+
+def evaluate_one_query(model, table_data, db_id, eng_query):
+    '''
+    eng_query will be tokenized
+    '''
+    model.eval()
+    q_seq = [eng_query.split(" ")]
+    col_seq, col_org_seq, schema_seq = get_table_col_names(table_data, db_id)
+    col_num = [len(col_seq[0])]
+    pred_entry = (True, True, True)
+    #print("q_seq - {} \n\n col_seq - {} \n\n col_num - {} \n\n pred_entry - {} \n\n".format(q_seq, col_seq, col_num, pred_entry))
+    score = model.forward(q_seq, col_seq, col_num, pred_entry)
+    #print("score - {} \n\n col_org_seq - {} \n\n schema_seq - {} \n\n".format(score, col_org_seq, schema_seq))
+    output = model.gen_sql(score, col_org_seq, schema_seq)
+    # print(output)
+    return " ".join(output)
+
 
 def load_para_wemb(file_name):
     f = io.open(file_name, 'r', encoding='utf-8')
