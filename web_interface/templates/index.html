@@ -4,8 +4,12 @@
     <title>Text2SQL Transfer Learning demo</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="./static/CSS/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="./static/CSS/bootstrap.min.css"> -->
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="./static/CSS/general.css">
+    <link rel="stylesheet" href="./static/CSS/schema.css">
 </head>
 
 <body>
@@ -25,12 +29,30 @@
                         </div>
                     </div>
                 </div>
-                <div class="row padding text-center">
-                    <div class="col">
+                <div class="row text-center">
+                    <div class="col-10">
+                    </div>
+                    <div class="col-2">
                         <!--Basic textarea-->
+                        <button type="button" id="schema_button" class="btn btn-link">Show schema</button>
+                    </div>
+                </div>
+                <div class="row padding text-center">
+                    <div class="col-6">
+                        <button class="btn btn-info dropdown-toggle" id="db_dropdown_button" type="button"
+                            data-toggle="dropdown">
+                            <span id="db_dropdown_button">Database selection</span>
+                            <span class="caret"></span></button>
+                        <ul class="db_menu dropdown-menu"
+                            style="padding-left: 10px; overflow-y: scroll; height: 500px;">
+                            {% for result in db %}
+                            <li><a class="dropdown-item" href="#">{{result}}</a></li>
+                            {% endfor %}
+                        </ul>
+                        </button>
                         <button type="button" id="convert_button" class="btn btn-success">Convert to SQL</button>
                     </div>
-                    <div class="col">
+                    <div class="col-6">
                         <!--Basic textarea-->
                         <button type="button" id="clear_button" class="btn btn-danger">Clear</button>
                     </div>
@@ -42,7 +64,7 @@
             style="border-radius: 25px; margin-top: 2%; display: none">
             <div class="card-body">
                 <div>
-                    <h4>Result:</h4>
+                    <h4>Result</h4>
                 </div>
                 <div class="row">
                     <div class="col">
@@ -51,10 +73,31 @@
                 </div>
             </div>
         </div>
+        <div class="card border-left-success shadow h-60" id="schema_card"
+            style="border-radius: 25px; margin-top: 2%; display: none; margin-bottom: 2%">
+            <div class="card-body">
+                <div class="text-center">
+                    <h4>Database Schema</h4>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="clt" id="schema_layout">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
-<script src="./static/JS/jquery.min.js"></script>
-<script src="./static/JS/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+</script>
 <script src="./static/JS/general.js"></script>
 
 </html>

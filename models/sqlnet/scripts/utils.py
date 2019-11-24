@@ -190,13 +190,10 @@ def print_results(model, batch_size, sql_data, table_data, output_file, schemas,
         st = ed
 
 def get_table_col_names(table_loc, table_name):
-    json_file = open(table_loc)
-    data = json.load(json_file)
-    print("Loaded json file")
     col_seq = []
     col_org_seq = []
     schema_seq = []
-    for item in data:
+    for item in table_loc:
         if (item['db_id'] == table_name):
             temp1 = item['column_names']
             for temp1_i in temp1:
@@ -205,6 +202,27 @@ def get_table_col_names(table_loc, table_name):
             schema_seq.append(item)
             
     return [col_seq], col_org_seq, schema_seq
+
+def get_db_schema(table_loc, table_name):
+    output = {}
+    # iterate through tables file
+    for item in table_loc:
+        # find the right database
+        if (item['db_id'] == table_name):
+            # get all of the table names
+            for t_idx, t_item in enumerate(item['table_names']):
+                # for each table name, add to a list of column names that match with the index
+                output[t_item] = []
+                for c_item in item['column_names']:
+                    if (c_item[0] == t_idx):
+                        output[t_item].append(c_item[1])
+    return output
+    
+def get_db_names(table_loc):
+    tables = []
+    for item in table_loc:
+        tables.append(item['db_id'])
+    return tables
 
 
 def evaluate_one_query(model, table_data, db_id, eng_query):
