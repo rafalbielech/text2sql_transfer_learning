@@ -1,13 +1,13 @@
 import sys
 import os
-sys.path.append(os.path.join("..","models","sqlnet", "scripts"))
 import datetime
 import json
 import argparse
 import torch
+sys.path.append(os.path.join("..","models","sqlnet", "scripts"))
 from web_utils import *
-from flask import Flask, render_template, request, jsonify
 from utils import *
+from flask import Flask, render_template, request, jsonify
 from model.sqlnet import SQLNet
 
 app = Flask(__name__)
@@ -18,7 +18,7 @@ tables_json = None
 
 @app.route("/")
 def welcome():
-    return render_template("index.html", db=get_db_names(tables_json))
+    return render_template("index.html", db=sorted(get_db_names(tables_json)))
 
 
 @app.route("/schema", methods=['POST'])
@@ -44,7 +44,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--port_number', type=int, help='the location of the original spider dataset', default=80)
     parser.add_argument('--tables', type=str, help='the location of the table.json file used to define schema for databases', default=os.path.join(".","tables.json"))    
+    parser.add_argument('--glove_emb_dir', type=str, help="directory containing glove embeddings", default=os.path.join('..','models','sqlnet','glove'))
+    parser.add_argument('--saved_model_dir', type=str, help="directory containing saved model components", default=os.path.join('..','models','sqlnet','saved_models'))
     args = parser.parse_args()
+
     try:
         assert 80 <= args.port_number < 65000, 'port number out of bounds'
         print("Connect to http://{}:{} to access this server".format(get_ip_address(), args.port_number))
@@ -55,24 +58,25 @@ if __name__ == "__main__":
         N_word=300
         B_word=42
         t1 = datetime.datetime.now()
-        word_emb = load_word_emb(os.path.join('..','models','sqlnet','glove/glove.%dB.%dd.txt'%(B_word,N_word)), load_used=False, use_small=False)
+        word_emb = load_word_emb(os.path.join(args.glove_emb_dir,  'glove.%dB.%dd.txt'%(B_word,N_word)), load_used=False, use_small=False)
         print("Word embedding loaded in {} seconds".format((datetime.datetime.now() - t1).total_seconds()))
         
+        t1 = datetime.datetime.now()
         print("Initializing model...")
         model = SQLNet(word_emb, N_word=N_word, gpu=False, trainable_emb = False)
-        
-        t1 = datetime.datetime.now()
+
         print("Loading from sel model...")
-        model.sel_pred.load_state_dict(torch.load(os.path.join("..", "models", "sqlnet", "saved_models/sel_models.dump")))
+        model.sel_pred.load_state_dict(torch.load(os.path.join(args.saved_model_dir, "sel_models.dump")))
         print("Loading from cond model...")
-        model.cond_pred.load_state_dict(torch.load(os.path.join("..", "models", "sqlnet", "saved_models/cond_models.dump")))
+        model.cond_pred.load_state_dict(torch.load(os.path.join(args.saved_model_dir, "cond_models.dump")))
         print("Loading from group model...")
-        model.group_pred.load_state_dict(torch.load(os.path.join("..", "models", "sqlnet", "saved_models/group_models.dump")))
+        model.group_pred.load_state_dict(torch.load(os.path.join(args.saved_model_dir, "group_models.dump")))
         print("Loading from order model...")
-        model.order_pred.load_state_dict(torch.load(os.path.join("..", "models", "sqlnet", "saved_models/order_models.dump")))
-        print("Saved model loaded in {} seconds".format((datetime.datetime.now() - t1).total_seconds()))
+        model.order_pred.load_state_dict(torch.load(os.path.join(args.saved_model_dir, "order_models.dump")))
         
+        print("Saved model initalized and loaded in {} seconds".format((datetime.datetime.now() - t1).total_seconds()))
         app.run(host="0.0.0.0", port=args.port_number, debug=False)
+
     except Exception as e:
         print("ERROR in the start-up process:{}", e)
 
