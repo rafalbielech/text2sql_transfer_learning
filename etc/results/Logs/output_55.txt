@@ -1,0 +1,5 @@
+Directory  new_db_split_55  created at location: new_db_split_55
+Before, length of list was 9693
+After, length of list was 9685
+splitting using version 2
+| Database e_government | train ex #: 9645 | test ex #: 40 |

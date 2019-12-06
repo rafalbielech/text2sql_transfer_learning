@@ -1,9 +1,15 @@
 body {
     font-family: Georgia;
+    overflow-y:scroll;
 }
 
 button{
     border-radius: 25px;
+    padding: 10px;
+}
+
+#message{
+    color: red;
 }
 
 .padding {

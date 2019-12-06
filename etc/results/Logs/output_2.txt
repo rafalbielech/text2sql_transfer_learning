@@ -1,0 +1,5 @@
+Directory  new_db_split_2  created at location: new_db_split_2
+Before, length of list was 9693
+After, length of list was 9685
+splitting using version 2
+| Database aircraft | train ex #: 9639 | test ex #: 46 |

@@ -1,0 +1,23 @@
+Directory  new_db_split_36  created at location: new_db_split_36
+Before, length of list was 9693
+After, length of list was 9685
+splitting using version 2
+| Database cre_Theme_park | train ex #: 9601 | test ex #: 84 |
+Namespace(dataset='new_db_split_36', epochs=100, no_gpu=True, save_to_path='./models/sqlnet/saved_models_36', toy=False, train_emb=False)
+Loading from datasets... new_db_split_36
+new_db_split_36/tables.json new_db_split_36/train_train.json new_db_split_36/train_val.json
+Loading data from new_db_split_36/tables.json
+Loading data from new_db_split_36/train_train.json
+Loading data from new_db_split_36/train_val.json
+Loading data from new_db_split_36/train_val.json
+Loading word embedding from ./models/sqlnet/glove/glove.6B.50d.txt
+Using fixed embedding for words but trainable embedding for types
+Loading from datasets... new_db_split_36
+new_db_split_36/tables.json new_db_split_36/retrain_train.json new_db_split_36/retrain_val.json
+Loading data from new_db_split_36/tables.json
+Loading data from new_db_split_36/retrain_train.json
+Loading data from new_db_split_36/retrain_val.json
+Loading data from new_db_split_36/retrain_val.json
+Loading word embedding from ./models/sqlnet/glove/glove.6B.50d.txt
+Using fixed embedding for words but trainable embedding for types
+Loading from sel model...
