@@ -111,11 +111,13 @@ class DataSplitter():
             train_train, train_val = split_training_data(all_except_designated, self.train_split)
             write_to_json("train_train", train_train)
             write_to_json("train_val", train_val)
+            assert len(all_except_designated) == len(train_train) + len(train_val), "Mismatch in the values for in the train counts" + designated_database
 
             retrain_train, retrain_val, retrain_test = split_retrain_set(designated, self.retrain_split)
             write_to_json("retrain_train", retrain_train)
             write_to_json("retrain_val", retrain_val)
             write_to_json("retrain_test", retrain_test)
+            assert len(designated) == len(retrain_train) + len(retrain_val) + len(retrain_test), "Mismatch in the values for in the retrain counts" + designated_database
         else:
             print("{} is in not the list".format(designated_database))
             write_to_json("all_train", combined_list)
@@ -155,10 +157,13 @@ class DataSplitter():
             # write to both dev and train files, because current model config expects these values
             write_to_json("train", all_except_designated)
             write_to_json("dev", designated)
+
             # further split the dev into testing and validation file
             test, val = split_test_val(designated, self.train_split)
             write_to_json("test", test)
             write_to_json("validate", val)
+            assert len(designated) == len(test) + len(val), "Mismatch in the values for in the retrain counts" + designated_database
+
         else:
             print("{} is in not the list".format(designated_database))
             write_to_json("all_train", combined_list)
@@ -236,6 +241,17 @@ class DataSplitter():
         else:
             print("Create a new dataset folder first")
 
+    def produce_example_questions(self):
+        data = {}
+        for db  in self.unique_combined_data:
+            data[db] = []
+            while len(data[db]) < 5:
+                for item in self.combined_data:
+                    if item['db_id'] == db:
+                        data[db].append(item['question'])
+        json.dump(data, open('example_questions.json', 'w'))
+
+
 
     def show_list_of_available_db(self):
         items = [item['db_id'] for item in self.combined_data]
@@ -244,6 +260,15 @@ class DataSplitter():
         print("There are {} unique dbs".format(len(unique_items)))
         for counter,db in enumerate(unique_items):
             print("{} - {}".format(counter,db))
+
+    def avail_db_to_json(self):
+        data = {}
+        unique_items = self.unique_combined_data
+        for counter,db in enumerate(unique_items):
+            data[counter] = db
+            data[db] = str(counter)
+        with open('data.json', 'w') as outfile:
+            json.dump(data, outfile)
 
 
 if __name__ == "__main__":

@@ -31,6 +31,7 @@
                 </div>
                 <div class="row text-center">
                     <div class="col-10">
+                        <p id="message"></p>
                     </div>
                     <div class="col-2">
                         <!--Basic textarea-->
@@ -39,7 +40,7 @@
                 </div>
                 <div class="row padding text-center">
                     <div class="col-6">
-                        <button class="btn btn-info dropdown-toggle" id="db_dropdown_button" type="button"
+                        <button class="btn-info dropdown-toggle" id="db_dropdown_button" type="button"
                             data-toggle="dropdown">
                             <span id="db_dropdown_button">Database selection</span>
                             <span class="caret"></span></button>
@@ -50,11 +51,12 @@
                             {% endfor %}
                         </ul>
                         </button>
-                        <button type="button" id="convert_button" class="btn btn-success">Convert to SQL</button>
                     </div>
                     <div class="col-6">
                         <!--Basic textarea-->
-                        <button type="button" id="clear_button" class="btn btn-danger">Clear</button>
+                        <button type="button" id="convert_button" class="btn-success">Convert to SQL</button>
+                        <button type="button" id="clear_button" class="btn-danger">Clear</button>
+
                     </div>
                 </div>
             </div>
@@ -77,12 +79,15 @@
             style="border-radius: 25px; margin-top: 2%; display: none; margin-bottom: 2%">
             <div class="card-body">
                 <div class="text-center">
-                    <h4>Database Schema</h4>
+                    <h4>Database Schema & Example questions</h4>
                 </div>
                 <div class="row">
-                    <div class="col">
+                    <div class="col-6">
                         <div class="clt" id="schema_layout">
-
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div id="ex_question_layout">
                         </div>
                     </div>
                 </div>
