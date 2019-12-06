@@ -1,0 +1,38 @@
+{
+    "unpack": {
+        "execCommand":["python", "unpack.py"],
+        "arguments": {}
+    },
+    "datasplitter": {
+        "execCommand":["python", "datasplitter.py"],
+        "arguments": {
+               "orig_dataset": "spider_dataset",
+               "new_dataset_dir": "new_db_split_",
+               "database_num": 1,
+               "train_split": 0.7,
+               "print_db_nums": false,
+               "retrain_split": 0.7
+        }
+    },
+    "train":{
+        "execCommand": ["python", "./models/sqlnet/train.py"],
+        "arguments": {
+            "dataset": "new_db_split_",
+            "save_to_path": "./models/sqlnet/saved_models_",
+            "epochs":100,
+            "no_gpu": true
+        }
+    },
+    "retrain":{
+        "execCommand": ["python", "./models/sqlnet/retrain.py"],
+        "arguments":{
+            "dataset": "new_db_split_",
+            "save_to_path": "./models/sqlnet/retrain_saved_models_",
+            "base_model_path": "./models/sqlnet/saved_models_",
+            "train_emb": false,
+            "no_gpu": true,
+            "epochs": 100
+
+        }
+    }
+}

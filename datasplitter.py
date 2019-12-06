@@ -287,6 +287,7 @@ if __name__ == "__main__":
         help='retrain data split, either < 1 as decimal for percentage or integer for number of examples in retrain file', default=0.6)
     parser.add_argument('--version', type=int, 
         help='version 1 produces train val test splits, version 2 furthers splits each into sub train retrain splits', default=2)
+    
     args = parser.parse_args()
 
     original_directory_name = args.orig_dataset
