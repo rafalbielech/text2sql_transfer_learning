@@ -3,6 +3,7 @@ import io
 import json
 import numpy as np
 import os
+
 #from lib.dbengine import DBEngine
 
 def lower_keys(x):
@@ -181,13 +182,16 @@ def print_results(model, batch_size, sql_data, table_data, output_file, schemas,
         raw_q_seq = [x[0] for x in raw_data]
         raw_col_seq = [x[1] for x in raw_data]
         query_gt, table_ids = to_batch_query(sql_data, perm, st, ed)
-        #print("q_seq - {} \n\n col_seq - {} \n\n col_num - {} \n\n pred_entry - {} \n\n".format(q_seq, col_seq, col_num, pred_entry))
+        print("q_seq - {} \n\n col_seq - {} \n\n col_num - {} \n\n pred_entry - {} \n\n".format(q_seq, col_seq, col_num, pred_entry))
         score = model.forward(q_seq, col_seq, col_num, pred_entry)
-        #print("score - {} \n\n col_org_seq - {} \n\n schema_seq - {} \n\n".format(score, col_org_seq, schema_seq))
+        print("score - {} \n\n col_org_seq - {} \n\n schema_seq - {} \n\n".format(score, col_org_seq, schema_seq))
         gen_sqls = model.gen_sql(score, col_org_seq, schema_seq)
+        print(gen_sqls)
         for sql in gen_sqls:
             output.write(sql+"\n")
         st = ed
+
+
 
 def get_table_col_names(table_loc, table_name):
     col_seq = []
@@ -230,16 +234,17 @@ def evaluate_one_query(model, table_data, db_id, eng_query):
     eng_query will be tokenized
     '''
     model.eval()
-    q_seq = [eng_query.split(" ")]
+    q_seq = [[t.strip() for t in re.findall(r'\b.*?\S.*?(?:\b|$)', eng_query)]]
     col_seq, col_org_seq, schema_seq = get_table_col_names(table_data, db_id)
     col_num = [len(col_seq[0])]
     pred_entry = (True, True, True)
     #print("q_seq - {} \n\n col_seq - {} \n\n col_num - {} \n\n pred_entry - {} \n\n".format(q_seq, col_seq, col_num, pred_entry))
-    score = model.forward(q_seq, col_seq, col_num, pred_entry)
+    score = model.forward(q_seq * 5, col_seq * 5, col_num * 5, pred_entry)
     #print("score - {} \n\n col_org_seq - {} \n\n schema_seq - {} \n\n".format(score, col_org_seq, schema_seq))
-    output = model.gen_sql(score, col_org_seq, schema_seq)
+    output = model.gen_sql(score, col_org_seq * 5, schema_seq * 5)
+    #print(output)
     # print(output)
-    return " ".join(output)
+    return output[0]
 
 
 def load_para_wemb(file_name):

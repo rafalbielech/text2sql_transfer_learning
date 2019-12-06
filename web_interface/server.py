@@ -74,6 +74,7 @@ def get_schema():
 
 @app.route("/evaluate", methods=['POST'])
 def forward_feed():
+    global model
     # capture the input from the front end
     response = request.get_json(force=True)
     # table will be found under response['table]
