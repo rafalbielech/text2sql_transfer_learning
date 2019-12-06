@@ -1,7 +1,7 @@
 import subprocess
 import argparse
 import json
-
+#To generate command line arguments
 def process_arguments(arguments, i):
     kwargs=[]
     for key in arguments:
@@ -36,7 +36,7 @@ if __name__ == '__main__':
         f = open("output_"+str(i)+".txt", "w")
         #datasplitter
         kwargs=process_arguments(config["datasplitter"]["arguments"], i)
-        print(kwargs)
+        #print(kwargs)
         subprocess.call(config["datasplitter"]["execCommand"]+kwargs, stdout=f)
     
         print('Calling train for', i) 
