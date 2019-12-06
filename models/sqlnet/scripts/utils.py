@@ -40,13 +40,14 @@ def load_data_new(sql_path, table_data, use_small=False):
         return sql_data_new, table_data_new, schemas
 
 
-def load_dataset(dataset_dir, use_small=False):
-    print("Loading from datasets...")
-    
+def load_dataset(dataset_dir, train_mode="train", use_small=False):
+    print("Loading from datasets...",dataset_dir)
+    dataset_dir +="/"
     TABLE_PATH = os.path.join(dataset_dir, "tables.json")
-    TRAIN_PATH = os.path.join(dataset_dir, "train.json")
-    DEV_PATH = os.path.join(dataset_dir, "dev.json")
-    TEST_PATH = os.path.join(dataset_dir, "dev.json")
+    TRAIN_PATH = os.path.join(dataset_dir, train_mode+"_train.json")
+    DEV_PATH = os.path.join(dataset_dir, train_mode+"_val.json")
+    TEST_PATH = os.path.join(dataset_dir, train_mode+"_val.json")
+    print(TABLE_PATH, TRAIN_PATH, DEV_PATH)
     with open(TABLE_PATH) as inf:
         print("Loading data from %s"%TABLE_PATH)
         table_data= json.load(inf)
