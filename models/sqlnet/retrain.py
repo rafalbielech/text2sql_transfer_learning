@@ -50,6 +50,7 @@ if __name__ == '__main__':
     TRAIN_ENTRY=(True, True, True)  # (AGG, SEL, COND)
     TRAIN_AGG, TRAIN_SEL, TRAIN_COND = TRAIN_ENTRY
     learning_rate = args.learning_rate
+    TEST_ENTRY = (True, True, True)
 
     sql_data, table_data, val_sql_data, val_table_data, \
             test_sql_data, test_table_data, schemas,\
@@ -87,8 +88,8 @@ if __name__ == '__main__':
         
     for i in range(args.epochs):
         print('Epoch %d @ %s'%(i+1, datetime.datetime.now()))
-        print(' Loss = %s'%epoch_train(model, optimizer, BATCH_SIZE, val_sql_data, val_table_data, schemas, TRAIN_ENTRY))
-        train_tot_acc, train_bkd_acc = epoch_acc(model, BATCH_SIZE, val_sql_data, val_table_data, schemas, TRAIN_ENTRY, train_flag = True)
+        print(' Loss = %s'%epoch_train(model, optimizer, BATCH_SIZE, sql_data, table_data, schemas, TRAIN_ENTRY))
+        train_tot_acc, train_bkd_acc = epoch_acc(model, BATCH_SIZE, sql_data, table_data, schemas, TRAIN_ENTRY, train_flag = True)
         print(' Train acc_qm: %s' % train_tot_acc)
         print(' Breakdown results: sel: %s, cond: %s, group: %s, order: %s'\
             % (train_bkd_acc[0], train_bkd_acc[1], train_bkd_acc[2], train_bkd_acc[3]))
@@ -118,5 +119,15 @@ if __name__ == '__main__':
         if val_tot_acc > best_tot_acc:
             best_tot_acc = val_tot_acc
 
+    print(' Best val sel = %s, cond = %s, group = %s, order = %s, tot = %s'%(best_sel_acc, best_cond_acc, best_group_acc, best_order_acc, best_tot_acc))
 
-print(' Best val sel = %s, cond = %s, group = %s, order = %s, tot = %s'%(best_sel_acc, best_cond_acc, best_group_acc, best_order_acc, best_tot_acc))
+    print("Loading from sel model...")
+    model.sel_pred.load_state_dict(torch.load("saved_models/sel_models.dump"))
+    print("Loading from sel model...")
+    model.cond_pred.load_state_dict(torch.load("saved_models/cond_models.dump"))
+    print("Loading from sel model...")
+    model.group_pred.load_state_dict(torch.load("saved_models/group_models.dump"))
+    print("Loading from sel model...")
+    model.order_pred.load_state_dict(torch.load("saved_models/order_models.dump"))
+
+    print_results(model, BATCH_SIZE, test_sql_data, test_table_data, args.output, schemas, TEST_ENTRY)
