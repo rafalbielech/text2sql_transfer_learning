@@ -34,5 +34,15 @@
             "epochs": 100
 
         }
+    },
+    "test": {
+        "execCommand": ["python", "./models/sqlnet/test.py"],
+        "arguments":{
+            "dataset": "new_db_split_",
+            "output": "./out_sql_",
+            "train_emb": false,
+            "no_gpu": true,
+            "base_model_path": "./models/sqlnet/saved_models_"
+        }
     }
 }

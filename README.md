@@ -43,3 +43,14 @@ p.split_based_on_database_v1(some_database_to_split_on, p.combined_data)
 p.delete_dataset_folder()
 ```
 For some reason, DEV_PATH and TEST_PATH right now are expecting a dev.json file thus one is created, however, it is properly split up into test and validate json files using a designated split.
+
+
+## Experiment Driver
+
+The experiment driver integrates the modules(datasplitter.py, train.py, retrain.py and test.py). The configurations can be modified in the config.json in the root folder before executing the file. This was the python script used to conduct our experiments and parellize our train, retrain and test procedure on gypsum. If running on local machine with no gpus, make sure to set the --no_gpu flag as true in the config.json, else set the no_gpu flag as false.
+
+The experiment driver expects two arguments --start and --end to indicate the range of database numbers that we want to perform the experiment on. 
+
+Command line interface:
+
+```python experimentDriver.py --start 1 --end 10```

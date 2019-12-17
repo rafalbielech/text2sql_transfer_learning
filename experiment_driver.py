@@ -5,7 +5,7 @@ import json
 def process_arguments(arguments, i):
     kwargs=[]
     for key in arguments:
-            if key in ["new_dataset_dir", "dataset", "save_to_path", "base_model_path"]:
+            if key in ["new_dataset_dir", "dataset", "save_to_path", "base_model_path", "output"]:
                 kwargs.append("--"+key+"="+arguments[key]+str(i))
             elif key in ["database_num"]:
                 kwargs.append("--"+key+"="+str(i))
@@ -33,10 +33,8 @@ if __name__ == '__main__':
 
     for i in range(args.start, args.end+1):
         print('Starting datasplitting for', i)
-        f = open("output_"+str(i)+".txt", "w")
-        #datasplitter
+        f = open("output_retrain_"+str(i)+".txt", "w")
         kwargs=process_arguments(config["datasplitter"]["arguments"], i)
-        #print(kwargs)
         subprocess.call(config["datasplitter"]["execCommand"]+kwargs, stdout=f)
     
         print('Calling train for', i) 
@@ -46,4 +44,8 @@ if __name__ == '__main__':
         print('Calling retrain for', i)
         kwargs_retrain = process_arguments(config["retrain"]["arguments"], i)
         subprocess.call(config["retrain"]["execCommand"]+kwargs_retrain, stdout=f)
+
+        print('Calling test for', i)
+        kwargs_retrain = process_arguments(config["test"]["arguments"], i)
+        subprocess.call(config["test"]["execCommand"]+kwargs_retrain, stdout=f)
         f.close()

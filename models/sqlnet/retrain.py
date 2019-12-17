@@ -92,7 +92,7 @@ if __name__ == '__main__':
         train_tot_acc, train_bkd_acc = epoch_acc(model, BATCH_SIZE, sql_data, table_data, schemas, TRAIN_ENTRY, train_flag = True)
         print(' Train acc_qm: %s' % train_tot_acc)
         print(' Breakdown results: sel: %s, cond: %s, group: %s, order: %s'\
-            % (train_bkd_acc[0], train_bkd_acc[1], train_bkd_acc[2], train_bkd_acc[3]))
+           % (train_bkd_acc[0], train_bkd_acc[1], train_bkd_acc[2], train_bkd_acc[3]))
 
         val_tot_acc, val_bkd_acc = epoch_acc(model, BATCH_SIZE, val_sql_data, val_table_data, schemas, TRAIN_ENTRY, error_print = False, train_flag = False) #for detailed error analysis, pass True to error_print
         print(' Dev acc_qm: %s' % val_tot_acc)
@@ -100,6 +100,7 @@ if __name__ == '__main__':
             % (val_bkd_acc[0], val_bkd_acc[1], val_bkd_acc[2], val_bkd_acc[3]))
         
         #save models
+
         if val_bkd_acc[0] > best_sel_acc:
             best_sel_acc = train_bkd_acc[0]
             print("Saving sel model...")
@@ -116,18 +117,9 @@ if __name__ == '__main__':
             best_order_acc = train_bkd_acc[3]
             print("Saving order model...")
             torch.save(model.order_pred.state_dict(), os.path.join(args.save_to_path, "order_models.dump"))
+
         if val_tot_acc > best_tot_acc:
             best_tot_acc = val_tot_acc
 
     print(' Best val sel = %s, cond = %s, group = %s, order = %s, tot = %s'%(best_sel_acc, best_cond_acc, best_group_acc, best_order_acc, best_tot_acc))
 
-    print("Loading from sel model...")
-    model.sel_pred.load_state_dict(torch.load("saved_models/sel_models.dump"))
-    print("Loading from sel model...")
-    model.cond_pred.load_state_dict(torch.load("saved_models/cond_models.dump"))
-    print("Loading from sel model...")
-    model.group_pred.load_state_dict(torch.load("saved_models/group_models.dump"))
-    print("Loading from sel model...")
-    model.order_pred.load_state_dict(torch.load("saved_models/order_models.dump"))
-
-    print_results(model, BATCH_SIZE, test_sql_data, test_table_data, args.output, schemas, TEST_ENTRY)
