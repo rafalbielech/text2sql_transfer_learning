@@ -2,263 +2,380 @@
 <html lang="en">
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="Rafał Bielech" />
     <title>Text-2-SQL | Rafał Bielech</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Text-2-SQL Transfer Learning project writeup">
-    <meta name="author" content="Rafał Bielech">
-    <link rel="apple-touch-icon" sizes="180x180" href="./images/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon/favicon-16x16.png">
-    <link rel="manifest" href="./images/favicon/site.webmanifest">
-    <link rel="mask-icon" href="./images/favicon/safari-pinned-tab.svg" color="#5bbad5">
-    <link rel="shortcut icon" href="./images/favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="./assets/img/favicon/site.webmanifest">
+    <link rel="mask-icon" href="./assets/img/favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="./assets/img/favicon/favicon.ico">
     <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="msapplication-config" content="./images/favicon/browserconfig.xml">
+    <meta name="msapplication-config" content="./assets/img/favicon/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
-    <link href="./static/css/bootstrap.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Nunito" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="js/fontawesome-all.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Saira+Extra+Condensed:500,700" rel="stylesheet"
+        type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,400i,800,800i" rel="stylesheet" type="text/css" />
+    <link href="css/styles.css" rel="stylesheet" />
 </head>
 
-<body data-gr-c-s-loaded="true">
-    <div class="container">
-        <div class="row" style="padding-top: 30px;">
-            <div class="col-lg-12">
-                <h2 class="text-muted text-center">An Analysis of Transfer Learning for Text-to-SQL</h2>
+<body id="page-top">
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" id="sideNav">
+        <a class="navbar-brand js-scroll-trigger" href="#page-top">
+            <span class="d-block d-lg-none">Rafał Bielech</span>
+            <span class="d-none d-lg-block"><img class="img-fluid img-profile rounded-circle mx-auto mb-2"
+                    src="assets/img/me_icon.jpg" alt="" /></span>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
+                class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#about">About</a></li>
+                <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#introduction">Introduction</a></li>
+                <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#dataset">Dataset</a></li>
+                <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#model">Model</a></li>
+                <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#results">Results</a>
+                <li class="nav-item"><a class="nav-link js-scroll-trigger" href="#contrib">Contributions</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <div class="container-fluid p-0">
+        <section class="information-section" id="about" style="align-items: center;">
+            <div class="information-section-content">
+                <h2 class="mb-0">
+                    An Analysis of Transfer Learning for Text-to-SQL
+
+                </h2>
+                <div class="subheading mb-2">
+                    Code is made available on <a target="_blank"
+                        href="https://github.com/rafalbielech/text2sql_transfer_learning">Github</a>, it was a final
+                    project for UMass CS585 class (NLP).
+                </div>
+
+                <div class="social-icons mt-2">
+                    <a class="social-icon" title="Project page" target="_blank"
+                        href="https://rafalbielech.github.io/projects/"><i class="fab fas fa-laptop-code"></i></a>
+                    <a class="social-icon" title="GitHub" target="_blank"
+                        href="https://github.com/rafalbielech/text2sql_transfer_learning"><i
+                            class="fab fa-github"></i></a>
+                </div>
+
+                <div class="text-muted mt-5 mb-2">
+                    <p>
+                        Transfer learning is a machine learning method that’s used in situations with limited data. The
+                        idea is to transfer knowledge from one domain to another by training a model on a large dataset,
+                        and then ”fine-tuning”the model on a target dataset, which is typically much smaller or more
+                        expensive to obtain.In many practical settings fine-tuning is crucial,specifically when the
+                        target dataset is not large enough to train a high-quality model, but a large and related
+                        dataset is available. In this work we’ll aim to answer questions like ”does transfer learn-ing
+                        work for text-to-SQL?”, ”will transfer learning work for this specific dataset?”, ”how many
+                        training points do I need?”, and ”how can I use transfer learning for text-to-SQL?”
+
+                    </p>
+                    <p>This was a final project for COMPSCI585 Natural Language Processing class at UMass Amherst. I
+                        worked with a group of four other students on this project. </p>
+                </div>
+
+                <div class="subheading text-primary mb-1">Programming Languages, Tools & Platforms</div>
+                <ul class="list-inline dev-icons">
+                    <li class="list-inline-item"><i class="fab fa-python"></i></li>
+                    <li class="list-inline-item"><i class="fab fa-html5"></i></li>
+                    <li class="list-inline-item"><i class="fab fa-css3-alt"></i></li>
+                    <li class="list-inline-item"><i class="fab fa-js"></i></li>
+                </ul>
             </div>
-            <div class="col-12">
-                <a href="https://rafalbielech.github.io/projects">
-                    <div class="text-primary"><span class="material-icons">
-                            arrow_back_ios
-                        </span><span class="material-icons">
-                            dashboard
-                        </span>
-                        <div class="my-auto">Go back to view other projects</div>
+        </section>
+        <hr class="m-0" />
+        <section class="information-section" id="introduction">
+            <div class="information-section-content">
+                <h2 class="mb-2">Introduction</h2>
+                <hr>
+                <div class="d-flex mb-5">
+                    <div class="row text-muted">
+                        <div class="col-lg-12">
+                            <p>The text-to-SQL task falls under the semantic-parsing framework, a framework where
+                                natural language
+                                is
+                                converted to some logical form, like a symbolic logic, computer code, or in this
+                                case,SQL queries.
+                                Early approaches to the text-to-SQL task, and more broadly semantic-parsing,used
+                                techniques like
+                                pattern-matching and other methods that would now be categorized as ”ex-pert systems”
+                                approaches.
+                                Later approaches to semantic parsing used more sophisticated, of-ten probabilistic
+                                methods, for
+                                example learning the parameters of a grammar or probabilistic mode. Recently, Neural
+                                methods
+                                have dominated the space, achieving state-of-the-art performance on many
+                                semantic-parsing tasks.
+                                For the text-to-SQL task, recursive neural network and sequence-to-sequence
+                                architectures have
+                                achieved state-of-the-art performance, overtaking previous methods by a wide margin</p>
+                            <p>
+                                Transfer learning is a machine learning method that’s used in situations with
+                                limited data. The idea is to transfer knowledge from one domain to another by training a
+                                model on a
+                                large dataset, and then ”fine-tuning”the model on a target dataset, which is typically
+                                much smaller
+                                or more expensive to obtain.In many practical settings fine-tuning is
+                                crucial,specifically when the
+                                target dataset is not large enough to train a high-quality model, but a large and
+                                related dataset is
+                                available. In this work we’ll aim to answer questions like ”does transfer learn-ing work
+                                for
+                                text-to-SQL?”, ”will transfer learning work for this specific dataset?”, ”how many
+                                training points
+                                do I need?”, and ”how can I use transfer learning for text-to-SQL?”
+                            </p>
+                            <p>
+                                This was a final project for COMPSCI585 Natural Language Processing class at UMass
+                                Amherst. I worked
+                                with a group of four other students on this project. The code is available <a
+                                    href="https://github.com/rafalbielech/text2sql_transfer_learning/"
+                                    target="_blank">here</a>.
+
+                            </p>
+
+                        </div>
                     </div>
-                </a>
+                </div>
             </div>
-            <hr class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="border-top: 2px solid lightgrey">
+        </section>
+        <hr class="m-0" />
+        <section class="information-section" id="dataset">
+            <div class="information-section-content">
+                <h2 class="mb-2">Results</h2>
+                <hr>
+                <div class="d-flex mb-5">
+                    <div class="row text-muted">
+                        <div class="col-lg-6">
+                            <p>
+                                We used the Spider dataset for this project. Spider is a large scale, cross-domain
+                                semantic
+                                parsing and text-to-sql dataset consisting of 9,685 unique data points that consists of
+                                English
+                                questions, associated SQL query from respective domains, and a break down of the SQL
+                                query over
+                                specific SQL clauses. The SQL queries are constructed from 166 databases covering 138
+                                domains. An
+                                example of a datapoint in our dataset is shown to the right. The model expects an
+                                English query
+                                tokenized, thus, for on-the-fly evaluation, an English query is split into separated
+                                tokens by white
+                                spaces
+                            </p>
+                            In the beginning step of the project, I implemented on the datasplitter that lets us combine
+                            all data
+                            together and make
+                            necessary splits based on the type of data that we are trying to split.
+                            Datasplitter.py defines a DataSplitter class that creates a new folder and merges the
+                            trainothers.json
+                            and trainspider.json files into one combined list of all datapoints. The DataSplitter class
+                            takes an
+                            input
+                            of the database that should be left out from the all of the training examples, thus all of
+                            the training
+                            examples are made up of data from 165 databases, while all examples from specified database
+                            are saved
+                            for retrain-ing and testing. DataSplitter then writes the newly split data into respective
+                            files in the
+                            newly created folder. The reason that we created a new folder for the data split is to
+                            prohibit any
+                            alterations to the original dataset.
+                            <p>
 
-        </div>
-        <div class="row text-muted">
-            <div class="col-lg-12">
-                <p>The text-to-SQL task falls under the semantic-parsing framework, a framework where natural language
-                    is
-                    converted to some logical form, like a symbolic logic, computer code, or in this case,SQL queries.
-                    Early approaches to the text-to-SQL task, and more broadly semantic-parsing,used techniques like
-                    pattern-matching and other methods that would now be categorized as ”ex-pert systems” approaches.
-                    Later approaches to semantic parsing used more sophisticated, of-ten probabilistic methods, for
-                    example learning the parameters of a grammar or probabilistic mode. Recently, Neural methods
-                    have dominated the space, achieving state-of-the-art performance on many semantic-parsing tasks.
-                    For the text-to-SQL task, recursive neural network and sequence-to-sequence architectures have
-                    achieved state-of-the-art performance, overtaking previous methods by a wide margin</p>
-                <p>
-                    Transfer learning is a machine learning method that’s used in situations with
-                    limited data. The idea is to transfer knowledge from one domain to another by training a model on a
-                    large dataset, and then ”fine-tuning”the model on a target dataset, which is typically much smaller
-                    or more expensive to obtain.In many practical settings fine-tuning is crucial,specifically when the
-                    target dataset is not large enough to train a high-quality model, but a large and related dataset is
-                    available. In this work we’ll aim to answer questions like ”does transfer learn-ing work for
-                    text-to-SQL?”, ”will transfer learning work for this specific dataset?”, ”how many training points
-                    do I need?”, and ”how can I use transfer learning for text-to-SQL?”
-                </p>
-                <p>
-                    This was a final project for COMPSCI585 Natural Language Processing class at UMass Amherst. I worked
-                    with a group of four other students on this project. The code is available <a href="https://github.com/rafalbielech/text2sql_transfer_learning/" target="_blank">here</a>.
-                    
-                </p>
-
+                            </p>
+                        </div>
+                        <div class="col-lg-6">
+                            <img src="assets/img/supplemental/db_screenshot.png" class="img-rounded img-fluid"
+                                alt="datapoint">
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </section>
+        <hr class="m-0" />
+        <section class="information-section" id="model">
+            <div class="information-section-content">
+                <h2 class="mb-2">Model</h2>
+                <hr>
+                <div class="d-flex mb-5">
+                    <div class="row text-muted">
+                        <div class="col-4">
+                            <p>
+                                The SQLNet model uses what is called a sketch to construct SQL queries. Sketch based
+                                approaches are
+                                popular among text-to-SQL models and, more generally, semantic parsing tasks. One reason
+                                to use
+                                sketches is to solve the so-called ”ordering issue”. Sketches impose a canonical
+                                structure on the
+                                output, whose dependencies allows us to intelligently populate the sketch. Syntax of a
+                                sketch is
+                                illustrated below.
+                            </p>
+                            <p>
+                                Sketches were originally developed to tackle problems on the WikiSQL dataset. For the
+                                Spider
+                                dataset,
+                                the SELECT and WHERE modules are extended to ORDER BY and GROUP BY components. It should
+                                be noted
+                                that these sketches are not exhaustive; there are still queries that cannot be
+                                expressed. However
+                                this
+                                limitation is due to alack of sketches; more sketches can be created to address this.
+                            </p>
+                        </div>
+                        <div class="col-4">
+                            <img src="assets/img/supplemental/sketch_2.JPG" class="img-rounded img-fluid"
+                                alt="datapoint">
+                        </div>
+                        <div class="col-4">
+                            <p>
+                                SQLNet, as mentioned earlier, avoids the ordering issue altogether by introducing a
+                                sequence to set
+                                model that can predict on an unordered set of constraints. In addition, the model
+                                employs asketch
+                                based approach that allows it avoid grammatical errors. The changes introduced in this
+                                model reflect
+                                in its performance. Of all the base-lines tested on the SPIDER dataset, the SQLNet model
+                                outperformed
+                                every other model.
+                            </p>
+                            <p>
+                                With the combination of a different training procedure, and type extraction using a
+                                knowledge graph,
+                                the TypeSQL model is supposed to im-proved upon the SQLNet model but the performance of
+                                both the
+                                models are largely similar with the edge going to the SQLNet model. For that rea-son,
+                                SQLNet was
+                                chosen as the baseline to learn the effects of transfer learning.
+                            </p>
+                        </div>
+                    </div>
 
+                </div>
+                <h4 class="mb-2">Methodology</h4>
 
-
-
-        <div class="row offset text-muted">
-            <div class="col-lg-12">
-                <h4 class="text-muted text-center">Dataset</h4>
+                <div class="d-flex mb-5">
+                    <div class="row text-muted">
+                        <div class="col-lg-8">
+                            <ul>
+                                <p>
+                                    After combining all of the data together, we have about 9.5K data points spanning
+                                    166 (n)
+                                    databases.
+                                </p>
+                                <li>Pick a database that will be used for transfer learning (t)</li>
+                                <li>Train the SQLNet model on the remaining (n-1) datasets </li>
+                                <li>Split selected dataset (t) into retrain and test set</li>
+                                <li>Retrain on t's retrain set and evaluate using t's test set using component matching
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-4">
+                            <p><b>Component matching: </b> The average exact match between components of the predicted
+                                and actual
+                                SQL queries. </p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <hr class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="border-top: 2px solid lightgrey">
-
-        </div>
-        <div class="row text-muted">
-            <div class="col-lg-6">
-                <p>
-                    We used the Spider dataset for this project. Spider is a large scale, cross-domain semantic
-                    parsing and text-to-sql dataset consisting of 9,685 unique data points that consists of English
-                    questions, associated SQL query from respective domains, and a break down of the SQL query over
-                    specific SQL clauses. The SQL queries are constructed from 166 databases covering 138 domains. An
-                    example of a datapoint in our dataset is shown to the right. The model expects an English query
-                    tokenized, thus, for on-the-fly evaluation, an English query is split into separated tokens by white
-                    spaces
-                </p>
-                In the beginning step of the project, I implemented on the datasplitter that lets us combine all data
-                together and make
-                necessary splits based on the type of data that we are trying to split.
-                Datasplitter.py defines a DataSplitter class that creates a new folder and merges the trainothers.json
-                and trainspider.json files into one combined list of all datapoints. The DataSplitter class takes an
-                input
-                of the database that should be left out from the all of the training examples, thus all of the training
-                examples are made up of data from 165 databases, while all examples from specified database are saved
-                for retrain-ing and testing. DataSplitter then writes the newly split data into respective files in the
-                newly created folder. The reason that we created a new folder for the data split is to prohibit any
-                alterations to the original dataset.
-                <p>
-
-                </p>
+        </section>
+        <section class="information-section" id="results">
+            <div class="information-section-content">
+                <h2 class="mb-2">Dataset</h2>
+                <hr>
+                <div class="d-flex mb-5">
+                    <div class="row text-muted">
+                        <div class="col-lg-4">
+                            <p>The baseline SQLNet model achieved <b>.11 accuracy</b> on the SPIDER dataset</p>
+                            <p>With fine tuning (weighted avg) on leave one out dataset, we were able to achieve <b>.22
+                                    accuracy</b>, the
+                                huge jump in accuracy is attributed to similarity between queries in the leave one out
+                                method. In
+                                this case, we are over-fitting to the data, which might be a correct approach for
+                                certain
+                                applications. </p>
+                        </div>
+                        <div class="col-lg-4">
+                            <p>Below image shows the average for leave one out dataset validation for each component in
+                                the SQL
+                                queries. In the image below, order clause has higher accuracy than select clause.</p>
+                            <img src="assets/img/supplemental/groupretrain.png" class="img-rounded img-fluid"
+                                alt="datapoint">
+                        </div>
+                        <div class="col-lg-4">
+                            <p>
+                                We built a web interface that allows users to interact with the pre-trained models in
+                                real-time.
+                                Additionally, users are able to see example questions for respective database while also
+                                learning
+                                about the schema of the database.
+                            </p>
+                            <p>
+                                We are using Python Flask to implement a simple server that accepts string input,
+                                evaluates the
+                                model by feeding the input through a forward pass in the network and then returns the
+                                output.
+                            </p>
+                            <p>
+                                The front-end is built HTML, CSS, and
+                                JavaScript and incorporates frameworks like boot-strap, jQuery and popper. When users
+                                select a
+                                different database in the dropdown, Flask reloads the models and loads respective files.
+                                On average,
+                                a model reload takes under 0.1 seconds while evaluation completes under 0.5 seconds
+                            </p>
+                            <img src="assets/img/supplemental/web_interface.png" class="img-rounded img-fluid"
+                                alt="datapoint">
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-6">
-                <img src="./images/db_screenshot.png" class="img-rounded img-fluid" alt="datapoint">
+        </section>
+        <section class="information-section" id="contrib">
+            <div class="information-section-content">
+                <h2 class="mb-2">Contributions</h2>
+                <hr>
+                <div class="d-flex mb-5">
+                    <div class="row text-muted">
+                        <div class="col-lg-12">
+                            <ul>
+                                <p>
+                                    The work of training models, implementation and others was split amongst the 5 team
+                                    members.
+                                </p>
+                                <p>
+                                    My
+                                    contributions were:
+                                </p>
+                                <li>Part of idea discussions and architecture design</li>
+                                <li>Built data processing scripts to merge and split data for transfer learning
+                                    (datasplitter.py)
+                                </li>
+                                <li>Built web application that interfaces with saved models from training (including
+                                    front-end and
+                                    back-end)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-
-
-
-
-        <div class="row offset text-muted">
-            <div class="col-lg-12">
-                <h4 style="text-align:center; margin-top:10px;">Model</h4>
-            </div>
-            <hr class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="border-top: 2px solid lightgrey">
-
-        </div>
-        <div class="row text-muted">
-            <div class="col-4">
-                <p>
-                    The SQLNet model uses what is called a sketch to construct SQL queries. Sketch based approaches are
-                    popular among text-to-SQL models and, more generally, semantic parsing tasks. One reason to use
-                    sketches is to solve the so-called ”ordering issue”. Sketches impose a canonical structure on the
-                    output, whose dependencies allows us to intelligently populate the sketch. Syntax of a sketch is
-                    illustrated below.
-                </p>
-                <p>
-                    Sketches were originally developed to tackle problems on the WikiSQL dataset. For the Spider
-                    dataset,
-                    the SELECT and WHERE modules are extended to ORDER BY and GROUP BY components. It should be noted
-                    that these sketches are not exhaustive; there are still queries that cannot be expressed. However
-                    this
-                    limitation is due to alack of sketches; more sketches can be created to address this.
-                </p>
-            </div>
-            <div class="col-4">
-                <img src="./images/sketch_2.JPG" class="img-fluid" alt="datapoint">
-            </div>
-            <div class="col-4">
-                <p>
-                    SQLNet, as mentioned earlier, avoids the ordering issue altogether by introducing a sequence to set
-                    model that can predict on an unordered set of constraints. In addition, the model employs asketch
-                    based approach that allows it avoid grammatical errors. The changes introduced in this model reflect
-                    in its performance. Of all the base-lines tested on the SPIDER dataset, the SQLNet model
-                    outperformed
-                    every other model.
-                </p>
-                <p>
-                    With the combination of a different training procedure, and type extraction using a knowledge graph,
-                    the TypeSQL model is supposed to im-proved upon the SQLNet model but the performance of both the
-                    models are largely similar with the edge going to the SQLNet model. For that rea-son, SQLNet was
-                    chosen as the baseline to learn the effects of transfer learning.
-                </p>
-            </div>
-        </div>
-
-
-
-
-        <div class="row offset text-muted">
-            <div class="col-lg-12">
-                <h4 style="text-align:center; margin-top:10px;">Methodology</h4>
-            </div>
-            <hr class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="border-top: 2px solid lightgrey">
-
-        </div>
-        <div class="row text-muted">
-            <div class="col-lg-8">
-                <ul>
-                    <p>
-                        After combining all of the data together, we have about 9.5K data points spanning 166 (n)
-                        databases.
-                    </p>
-                    <li>Pick a database that will be used for transfer learning (t)</li>
-                    <li>Train the SQLNet model on the remaining (n-1) datasets </li>
-                    <li>Split selected dataset (t) into retrain and test set</li>
-                    <li>Retrain on t's retrain set and evaluate using t's test set using component matching</li>
-                </ul>
-            </div>
-            <div class="col-lg-4">
-                <p><b>Component matching: </b> The average exact match between components of the predicted and actual
-                    SQL queries. </p>
-            </div>
-        </div>
-
-        <div class="row offset text-muted">
-            <div class="col-lg-12">
-                <h4 style="text-align:center; margin-top:10px;">Results</h4>
-            </div>
-            <hr class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="border-top: 2px solid lightgrey">
-
-        </div>
-        <div class="row text-muted">
-            <div class="col-lg-4">
-                <p>The baseline SQLNet model achieved <b>.11 accuracy</b> on the SPIDER dataset</p>
-                <p>With fine tuning (weighted avg) on leave one out dataset, we were able to achieve <b>.22
-                        accuracy</b>, the
-                    huge jump in accuracy is attributed to similarity between queries in the leave one out method. In
-                    this case, we are over-fitting to the data, which might be a correct approach for certain
-                    applications. </p>
-            </div>
-            <div class="col-lg-4">
-                <p>Below image shows the average for leave one out dataset validation for each component in the SQL
-                    queries. In the image below, order clause has higher accuracy than select clause.</p>
-                <img src="./images/groupretrain.png" class="img-rounded img-fluid" alt="datapoint">
-            </div>
-            <div class="col-lg-4">
-                <p>
-                    We built a web interface that allows users to interact with the pre-trained models in real-time.
-                    Additionally, users are able to see example questions for respective database while also learning
-                    about the schema of the database.
-                </p>
-                <p>
-                    We are using Python Flask to implement a simple server that accepts string input, evaluates the
-                    model by feeding the input through a forward pass in the network and then returns the output.
-                </p>
-                <p>
-                    The front-end is built HTML, CSS, and
-                    JavaScript and incorporates frameworks like boot-strap, jQuery and popper. When users select a
-                    different database in the dropdown, Flask reloads the models and loads respective files. On average,
-                    a model reload takes under 0.1 seconds while evaluation completes under 0.5 seconds
-                </p>
-                <img src="./images/web_interface.png" class="img-rounded img-fluid" alt="datapoint">
-            </div>
-        </div>
-
-        <div class="row offset text-muted">
-            <div class="col-lg-12">
-                <h4 style="text-align:center; margin-top:10px;">Contribution</h4>
-            </div>
-            <hr class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1" style="border-top: 2px solid lightgrey">
-
-        </div>
-        <div class="row text-muted">
-            <div class="col-lg-12">
-                <ul>
-                    <p>
-                        The work of training models, implementation and others was split amongst the 5 team members.
-                    </p>
-                    <p>
-                        My
-                        contributions were:
-                    </p>
-                    <li>Part of idea discussions and architecture design</li>
-                    <li>Built data processing scripts to merge and split data for transfer learning (datasplitter.py)
-                    </li>
-                    <li>Built web application that interfaces with saved models from training (including front-end and
-                        back-end)</li>
-                </ul>
-            </div>
-        </div>
-
-        <hr>
+        </section>
     </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/scripts.js"></script>
 </body>
+
 </html>
